@@ -1,3 +1,7 @@
 Example project from Let's Code Javascript http://letscodejavascript.com
 
 An in browser drawing tool - created with CI and TDD.
+
+
+This project comes with an automatic build script. To build, assuming
+you have Node.js installed, run: ./jake.sh
