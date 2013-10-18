@@ -3,6 +3,7 @@
     
     "use strict";
 
+    desc("Build and test");
     task("default", ["lint"]);
 
     desc("lint everything by default");
@@ -13,9 +14,10 @@
         files.include("**/*.js");
         files.exclude("node_modules");
 
-        lint.validateFileList(files.toArray(), nodeLintOptions(), {});
+        var passed = lint.validateFileList(files.toArray(), nodeLintOptions(), {});
+	if (!passed) fail("Lint failed");
     });
-    
+
     function nodeLintOptions() {
         return {
             bitwise: true,
