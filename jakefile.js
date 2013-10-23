@@ -4,9 +4,16 @@
     "use strict";
 
     desc("Build and test");
-    task("default", ["lint"]);
+    task("default", ["lint", "test"]);
 
-    desc("lint everything by default");
+    desc("Test everything by default");
+    task("test", [], function() {
+	var reporter = require("nodeunit").reporters["default"];
+	reporter.run(['src/server/_server_test.js']);
+    });
+
+
+    desc("Lint everything by default");
     task("lint", [], function() {
         var lint = require("./build/lint/lint_runner.js");
 
