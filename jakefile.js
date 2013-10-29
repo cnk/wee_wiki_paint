@@ -8,9 +8,12 @@
 
     desc("Test everything by default");
     task("test", [], function() {
-	var reporter = require("nodeunit").reporters["default"];
-	reporter.run(['src/server/_server_test.js']);
-    });
+        var reporter = require("nodeunit").reporters["default"];
+        reporter.run(['src/server/_server_test.js'], null, function(failures) {
+            if (failures) fail("Tests failed");
+            complete();
+        });
+    }, {async: false});
 
 
     desc("Lint everything by default");
@@ -22,7 +25,7 @@
         files.exclude("node_modules");
 
         var passed = lint.validateFileList(files.toArray(), nodeLintOptions(), {});
-	if (!passed) fail("Lint failed");
+        if (!passed) fail("Lint failed");
     });
 
     function nodeLintOptions() {
