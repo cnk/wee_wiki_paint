@@ -30,13 +30,11 @@
     // desc("Ensure correct version of node is present");
     task("node", [], function() {
         var desiredNodeVersion = 'v0.10.9';
-        var cmd = "node --version";
-        sh(cmd, function(stdout) {
-            console.log("\nRunning NodeJS version: " + stdout);
-            if (stdout !== desiredNodeVersion + "\n") fail("This code was written for NodeJS version " + desiredNodeVersion + ". You are currently running " + stdout + ".");
-            complete();
-        });
-    }, {async: true});
+        var runningVersion = process.version;
+
+        console.log("\nRunning NodeJS version: " + runningVersion);
+        if (runningVersion !== desiredNodeVersion) fail("This code was written for NodeJS version " + desiredNodeVersion + ". You are currently running " + runningVersion + ".");
+    });
 
     function nodeLintOptions() {
         return {
