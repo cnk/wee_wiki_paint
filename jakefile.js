@@ -1,20 +1,19 @@
 /*global desc, task, jake, fail, complete */
 (function() {
-    
+
     "use strict";
 
     desc("Build and test");
     task("default", ["lint", "test"]);
 
     desc("Test everything by default");
-    task("test", [], function() {
+    task("test", ["node"], function() {
         var reporter = require("nodeunit").reporters["default"];
         reporter.run(['src/server/_server_test.js'], null, function(failures) {
             if (failures) fail("Tests failed");
             complete();
         });
     }, {async: false});
-
 
     desc("Lint everything by default");
     task("lint", [], function() {
@@ -47,4 +46,19 @@
             node: true
         };
     }
+
+    // desc("Ensure correct version of node is present");
+    task("node", [], function() {
+        var desiredNodeVersion = 'v0.10.9\n';
+        var cmd = "node --version";
+        var process = jake.createExec([cmd]);
+        var version = '';
+        process.addListener('stdout', function(buf) {
+            version += buf;
+            if (version !== desiredNodeVersion) fail("This code was written for NodeJS version " + desiredNodeVersion + " You are currently running " + version);
+            complete();
+        });
+        process.run();
+    }, {async: true});
+
 }());

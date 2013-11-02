@@ -9,7 +9,7 @@ var server = http.createServer();
 server.on("request", function(request, response) {
     console.log("received request");
 
-    var body = "<h1>body</h1>";
+    var body = "<h1>Spike!</h1>";
 
     response.end(body);
 });
