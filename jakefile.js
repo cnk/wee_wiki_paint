@@ -27,6 +27,17 @@
         if (!passed) fail("Lint failed");
     });
 
+    // desc("Ensure correct version of node is present");
+    task("node", [], function() {
+        var desiredNodeVersion = 'v0.10.9';
+        var cmd = "node --version";
+        sh(cmd, function(stdout) {
+            console.log("\nRunning NodeJS version: " + stdout);
+            if (stdout !== desiredNodeVersion + "\n") fail("This code was written for NodeJS version " + desiredNodeVersion + ". You are currently running " + stdout + ".");
+            complete();
+        });
+    }, {async: true});
+
     function nodeLintOptions() {
         return {
             bitwise: true,
@@ -47,18 +58,16 @@
         };
     }
 
-    // desc("Ensure correct version of node is present");
-    task("node", [], function() {
-        var desiredNodeVersion = 'v0.10.9\n';
-        var cmd = "node --version";
+    function sh(cmd, callback) {
         var process = jake.createExec([cmd]);
-        var version = '';
+        var stdout = '';
         process.addListener('stdout', function(buf) {
-            version += buf;
-            if (version !== desiredNodeVersion) fail("This code was written for NodeJS version " + desiredNodeVersion + " You are currently running " + version);
-            complete();
+            stdout += buf;
+        });
+        process.addListener('cmdEnd', function() {
+            callback(stdout);
         });
         process.run();
-    }, {async: true});
+    }
 
 }());
