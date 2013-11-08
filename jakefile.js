@@ -15,6 +15,13 @@
         });
     }, {async: false});
 
+    desc("clean out test files");
+    task("clean", [], function() {
+        var testFiles = "generated/test/*";
+        var cmd = 'rm ' + testFiles;
+        sh(cmd, function(stdout){ });
+    });
+
     desc("Lint everything by default");
     task("lint", [], function() {
         var lint = require("./build/lint/lint_runner.js");
@@ -36,6 +43,18 @@
         if (runningVersion !== desiredNodeVersion) fail("This code was written for NodeJS version " + desiredNodeVersion + ". You are currently running " + runningVersion + ".");
     });
 
+    function sh(cmd, callback) {
+        var process = jake.createExec([cmd]);
+        var stdout = '';
+        process.addListener('stdout', function(buf) {
+            stdout += buf;
+        });
+        process.addListener('cmdEnd', function() {
+            callback(stdout);
+        });
+        process.run();
+    }
+
     function nodeLintOptions() {
         return {
             bitwise: true,
@@ -54,18 +73,6 @@
             trailing: true,
             node: true
         };
-    }
-
-    function sh(cmd, callback) {
-        var process = jake.createExec([cmd]);
-        var stdout = '';
-        process.addListener('stdout', function(buf) {
-            stdout += buf;
-        });
-        process.addListener('cmdEnd', function() {
-            callback(stdout);
-        });
-        process.run();
     }
 
 }());
