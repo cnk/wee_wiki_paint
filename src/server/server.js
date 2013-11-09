@@ -11,10 +11,15 @@ exports.start = function(portNumber, file_to_serve) {
 
     server = http.createServer();
     server.on("request", function(request, response) {
-        fs.readFile(file_to_serve, function(err, data) {
-            if (err) throw err;
-            response.end(data);
-        });
+        if (request.url === '/') {
+            fs.readFile(file_to_serve, function(err, data) {
+                if (err) throw err;
+                response.end(data);
+            });
+        } else {
+            response.statusCode = 404;
+            response.end();
+        }
     });
     server.listen(portNumber);
 };

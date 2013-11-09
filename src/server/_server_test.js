@@ -18,25 +18,42 @@ exports.tearDown = function(done) {
     done();
 };
 
+function httpGet(url, callback) {
+    server.start(PORT, TEST_FILE);
+    var request = http.get(url);
+    request.on("response", function(response) {
+        response.setEncoding('utf8');
+        var responseData = '';
+        response.on("data", function(chunk) {
+            responseData += chunk;
+        });
+        response.on("end", function() {
+            callback(response, responseData);
+            server.stop();
+        });
+    });
+}
+
 exports.test_serverServesAFile = function(test) {
     var testData = "This is from the test file";
     fs.writeFileSync(TEST_FILE, testData);
     test.ok(fs.existsSync(TEST_FILE), "The test file was not created");
 
-    server.start(PORT, TEST_FILE);
-    var request = http.get(URL);
-    request.on("response", function(response) {
-        response.setEncoding('utf8');
+    httpGet(URL, function(response, responseData) {
         test.equals(200, response.statusCode, "got 200 status code");
+        test.equals(testData, responseData, "response body contains hello world");
+        test.done();
+    });
+};
 
-        response.on("data", function(chunk) {
-            test.equals(testData, chunk, "response body contains hello world");
-        });
-        response.on("end", function() {
-            server.stop(function() {
-                test.done();
-            });
-        });
+exports.test_serverSends404sForEverythingExceptHomepage = function(test) {
+    var testData = "This is from the test file";
+    fs.writeFileSync(TEST_FILE, testData);
+    test.ok(fs.existsSync(TEST_FILE), "The test file was not created");
+
+    httpGet(URL + 'junk', function(response, responseData) {
+        test.equals(404, response.statusCode, "did not get 404 status code");
+        test.done();
     });
 };
 
