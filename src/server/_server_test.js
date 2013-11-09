@@ -5,29 +5,33 @@ var PORT = 8080;
 var URL = 'http://localhost:' + PORT + '/';
 
 var server = require("./server.js");
-// Require node's http module so we can use it's testing methods
-var http = require("http");
 
-exports.test_serverRespondsToGetRequests = function(test) {
-    server.start(PORT);
-    http.get(URL, function(response) {
-        test.equals(200, response.statusCode, 'status code should be 200');
-        response.on("data", function() {});
-        server.stop();
-        test.done();
-    });
-};
+var http = require("http"); // Require node's http module so we can use it's testing methods
+var fs = require('fs'); // For testing the file system dependent tests
 
-exports.test_serverReturnsHelloWorld = function(test) {
+exports.test_serverServesAFile = function(test) {
+    var testDir = "generated/test";
+    var testFile = testDir + "/a_file.html";
+    var testData = "This is from the test file";
+    fs.writeFileSync(testFile, testData);
+    test.ok(fs.existsSync(testFile), "testFile was not created");
+
     server.start(PORT);
     var request = http.get(URL);
     request.on("response", function(response) {
         response.setEncoding('utf8');
+        test.equals(200, response.statusCode, "got 200 status code");
+
         response.on("data", function(chunk) {
-            test.equals("Hello World!", chunk, "response body contains hello world");
+            test.equals(testData, chunk, "response body contains hello world");
         });
-        server.stop();
-        test.done();
+        response.on("end", function() {
+            server.stop(function() {
+                fs.unlinkSync(testFile);
+                test.ok(!fs.existsSync(testFile), "testFile was not removed");
+                test.done();
+            });
+        });
     });
 };
 
