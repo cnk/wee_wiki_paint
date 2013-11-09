@@ -5,13 +5,13 @@ var http = require("http");
 var fs = require("fs");
 var server;
 
-exports.start = function(portNumber) {
+exports.start = function(portNumber, file_to_serve) {
     if (!portNumber) throw new Error("Port number is required to start the server");
-    var my_file = "generated/test/a_file.html";
+    if (!file_to_serve) throw new Error("Path to a file to serve is required to start the server");
 
     server = http.createServer();
     server.on("request", function(request, response) {
-        fs.readFile(my_file, function(err, data) {
+        fs.readFile(file_to_serve, function(err, data) {
             if (err) throw err;
             response.end(data);
         });
