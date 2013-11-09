@@ -6,9 +6,17 @@ var URL = 'http://localhost:' + PORT + '/';
 var TEST_FILE = "generated/test/a_file.html";
 
 var server = require("./server.js");
-
 var http = require("http"); // Require node's http module so we can use it's testing methods
 var fs = require('fs'); // For testing the file system dependent tests
+var assert = require("assert");
+
+exports.tearDown = function(done) {
+    if (fs.existsSync(TEST_FILE)) {
+        fs.unlinkSync(TEST_FILE);
+        assert.ok(!fs.existsSync(TEST_FILE), "The test file was not removed");
+    }
+    done();
+};
 
 exports.test_serverServesAFile = function(test) {
     var testData = "This is from the test file";
@@ -26,8 +34,6 @@ exports.test_serverServesAFile = function(test) {
         });
         response.on("end", function() {
             server.stop(function() {
-                fs.unlinkSync(TEST_FILE);
-                test.ok(!fs.existsSync(TEST_FILE), "The test file was not removed");
                 test.done();
             });
         });
