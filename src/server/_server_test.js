@@ -34,12 +34,24 @@ function httpGet(url, callback) {
     });
 }
 
-exports.test_serverServesAFile = function(test) {
+exports.test_serverServesHomepageFromFile = function(test) {
     var testData = "This is from the test file";
     fs.writeFileSync(TEST_FILE, testData);
     test.ok(fs.existsSync(TEST_FILE), "The test file was not created");
 
     httpGet(URL, function(response, responseData) {
+        test.equals(200, response.statusCode, "got 200 status code");
+        test.equals(testData, responseData, "response body contains hello world");
+        test.done();
+    });
+};
+
+exports.test_serverServesHomepageAtIndex = function(test) {
+    var testData = "This is from the test file";
+    fs.writeFileSync(TEST_FILE, testData);
+    test.ok(fs.existsSync(TEST_FILE), "The test file was not created");
+
+    httpGet(URL + "index.html", function(response, responseData) {
         test.equals(200, response.statusCode, "got 200 status code");
         test.equals(testData, responseData, "response body contains hello world");
         test.done();
