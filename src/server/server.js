@@ -5,20 +5,25 @@ var http = require("http");
 var fs = require("fs");
 var server;
 
-exports.start = function(portNumber, file_to_serve) {
+function serveFile(response, file) {
+    fs.readFile(file, function(err, data) {
+        if (err) throw err;
+        response.end(data);
+    });
+}
+
+exports.start = function(portNumber, homepage_file, not_found_file) {
     if (!portNumber) throw new Error("Port number is required to start the server");
-    if (!file_to_serve) throw new Error("Path to a file to serve is required to start the server");
+    if (!homepage_file) throw new Error("Path to a homepage file is required to start the server");
+    if (!not_found_file) throw new Error("Path to a 404 file is required to start the server");
 
     server = http.createServer();
     server.on("request", function(request, response) {
         if (request.url === '/' || request.url === '/index.html') {
-            fs.readFile(file_to_serve, function(err, data) {
-                if (err) throw err;
-                response.end(data);
-            });
+            serveFile(response, homepage_file);
         } else {
             response.statusCode = 404;
-            response.end();
+            serveFile(response, not_found_file);
         }
     });
     server.listen(portNumber);
