@@ -25,17 +25,18 @@ exports.tearDown = function(done) {
 };
 
 function httpGet(url, callback) {
-    server.start(PORT, TEST_FILE, NOT_FOUND_FILE);
-    var request = http.get(url);
-    request.on("response", function(response) {
-        response.setEncoding('utf8');
-        var responseData = '';
-        response.on("data", function(chunk) {
-            responseData += chunk;
-        });
-        response.on("end", function() {
-            callback(response, responseData);
-            server.stop();
+    server.start(PORT, TEST_FILE, NOT_FOUND_FILE, function() {
+        var request = http.get(url);
+        request.on("response", function(response) {
+            response.setEncoding('utf8');
+            var responseData = '';
+            response.on("data", function(chunk) {
+                responseData += chunk;
+            });
+            response.on("end", function() {
+                callback(response, responseData);
+                server.stop();
+            });
         });
     });
 }

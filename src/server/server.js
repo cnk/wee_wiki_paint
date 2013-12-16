@@ -12,7 +12,7 @@ function serveFile(response, file) {
     });
 }
 
-exports.start = function(portNumber, homepage_file, not_found_file) {
+exports.start = function(portNumber, homepage_file, not_found_file, callback) {
     if (!portNumber) throw new Error("Port number is required to start the server");
     if (!homepage_file) throw new Error("Path to a homepage file is required to start the server");
     if (!not_found_file) throw new Error("Path to a 404 file is required to start the server");
@@ -26,7 +26,7 @@ exports.start = function(portNumber, homepage_file, not_found_file) {
             serveFile(response, not_found_file);
         }
     });
-    server.listen(portNumber);
+    server.listen(portNumber, callback);
 };
 
 exports.stop = function(callback) {
