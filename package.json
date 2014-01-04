@@ -1,0 +1,19 @@
+{
+  "name": "weewikipaint",
+  "version": "0.0.1",
+  "description": "Demo app from Let's Code Javascript videos",
+  "main": "src/server/weewikipaint.js",
+  "dependencies": {
+    "jake": "~0.7.2",
+    "jshint": "~2.1.11",
+    "nodeunit": "~0.8.1"
+  },
+  "repository": "",
+  "author": "Cynthia Kiser",
+  "license": "BSD",
+  "gitHead": "a2b41988108f6fb01567cc5016386c5858d8e18b",
+  "readmeFilename": "README",
+  "engines": {
+      "node": "v0.10.9"
+  }
+}

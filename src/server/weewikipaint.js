@@ -2,7 +2,10 @@
 // Start our node server
 "use strict";
 
+var CONTENT_DIR = "src/server/content";
+
 var server = require('./server.js');
-server.start('8080', 'src/server/content/homepage.html', 'src/server/content/not_found.html', function() {
+var port = process.argv[2];
+server.start(port, CONTENT_DIR + '/homepage.html', CONTENT_DIR + '/not_found.html', function() {
     console.log('Server started');
 });

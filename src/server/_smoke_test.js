@@ -4,6 +4,7 @@
 var child_process = require("child_process");
 var child; // to hold the process as a global
 var http = require('http');
+var PORT = '8080';
 
 function runServer(nodeArgs, callback) {
     child = child_process.spawn("node", nodeArgs);
@@ -37,7 +38,7 @@ function httpGet(url, callback) {
 }
 
 exports.setUp = function(done) {
-    runServer(['src/server/weewikipaint'], done);
+    runServer(['src/server/weewikipaint', PORT], done);
 };
 
 exports.tearDown = function(done) {
@@ -48,7 +49,7 @@ exports.tearDown = function(done) {
 };
 
 exports.test_HomepageServed = function(test) {
-    httpGet('http://localhost:8080', function(response, receivedData) {
+    httpGet('http://localhost:' + PORT, function(response, receivedData) {
         test.ok(receivedData.indexOf('Welcome to WeeWikiPaint!') !== -1);
         test.done();
     });
