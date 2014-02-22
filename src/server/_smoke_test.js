@@ -56,7 +56,7 @@ exports.test_HomepageServed = function(test) {
 };
 
 exports.test_NotFoundServed = function(test) {
-    httpGet('http://localhost:8080/beetlejuice', function(response, receivedData) {
+    httpGet('http://localhost:' + PORT + '/beetlejuice', function(response, receivedData) {
         test.ok(receivedData.indexOf('File not found') !== -1);
         test.done();
     });
