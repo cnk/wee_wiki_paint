@@ -4,13 +4,26 @@
 var child_process = require("child_process");
 var child; // to hold the process as a global
 var http = require('http');
-var PORT = '8080';
+var fs = require('fs');
+var procfile = require('procfile');
+var PORT = '5000';
 
-function runServer(nodeArgs, callback) {
-    child = child_process.spawn("node", nodeArgs);
+function parseProcfile() {
+    var file = fs.readFileSync('Procfile', 'utf8');
+    var conf = procfile.parse(file).web;
+    // if the procfile has an environment var placeholder, put in default port: 5000
+    conf.options = conf.options.map(function(element) {
+        if (element === '$PORT') return '5000';
+        else return element;
+    });
+    return conf;
+}
+
+function runServer(callback) {
+    var conf = parseProcfile();
+    child = child_process.spawn(conf.command, conf.options);
     child.stdout.setEncoding('utf8');
     child.stdout.on("data", function(chunk) {
-        // process.stdout.write('server stdout: ' + chunk );
         if (chunk.trim() === "Server started") {
             callback();
         }
@@ -37,8 +50,9 @@ function httpGet(url, callback) {
     });
 }
 
+
 exports.setUp = function(done) {
-    runServer(['src/server/weewikipaint', PORT], done);
+    runServer(done);
 };
 
 exports.tearDown = function(done) {
