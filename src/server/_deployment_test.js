@@ -1,4 +1,4 @@
-// wee_wiki_paint/src/server/_server_test.js
+// wee_wiki_paint/src/server/_deployment_test.js
 "use strict";
 
 var http = require('http');
