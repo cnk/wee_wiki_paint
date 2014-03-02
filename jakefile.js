@@ -7,7 +7,10 @@
     task("default", ["lint", "test"]);
 
     desc("Test everything by default");
-    task("test", ["node"], function() {
+    task("test", ["testServer", "testClient"]);
+
+    desc("Test our node server");
+    task("testServer", ["node"], function() {
         var testFiles = new jake.FileList();
         testFiles.include("**/_*_test.js");
         testFiles.exclude("node_modules");
@@ -18,6 +21,11 @@
             if (failures) fail("Tests failed");
             complete();
         });
+    }, {async: false});
+
+    desc("Test our node server");
+    task("testClient", ["node"], function() {
+        console.log('Client side testing goes here');
     }, {async: false});
 
     desc("clean out test files");

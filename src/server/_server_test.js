@@ -1,7 +1,7 @@
 // wee_wiki_paint/src/server/_server_test.js
 "use strict";
 
-var PORT = 8080;
+var PORT = 5000;
 var URL = 'http://localhost:' + PORT + '/';
 var TEST_FILE = "generated/test/a_file.html";
 var NOT_FOUND_FILE = "generated/test/404.html";
