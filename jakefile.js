@@ -10,7 +10,7 @@
     task("test", ["testServer", "testClient"]);
 
     desc("Test our node server");
-    task("testServer", ["node"], function() {
+    task("testServer", ["nodeVersion"], function() {
         var testFiles = new jake.FileList();
         testFiles.include("**/_*_test.js");
         testFiles.exclude("node_modules");
@@ -21,12 +21,12 @@
             if (failures) fail("Tests failed");
             complete();
         });
-    }, {async: false});
+    }, {async: true});
 
-    desc("Test our node server");
-    task("testClient", ["node"], function() {
-        console.log('Client side testing goes here');
-    }, {async: false});
+    desc("Test our client-side code in multiple browsers at once.");
+    task("testClient", function() {
+        sh("node_modules/.bin/karma run", "Client-side tets failed!", complete);
+    }, {async: true});
 
     desc("clean out test files");
     task("clean", [], function() {
@@ -49,7 +49,7 @@
     });
 
     // desc("Ensure correct version of node is present");
-    task("node", [], function() {
+    task("nodeVersion", [], function() {
         var desiredNodeVersion = 'v0.10.9';
         var runningVersion = process.version;
 
@@ -57,14 +57,19 @@
         if (runningVersion !== desiredNodeVersion) fail("This code was written for NodeJS version " + desiredNodeVersion + ". You are currently running " + runningVersion + ".");
     });
 
-    function sh(cmd, callback) {
-        var process = jake.createExec([cmd]);
+    function sh(cmd, errorMsg, callback) {
+        console.log("Run: " + cmd);
+
         var stdout = '';
+        var process = jake.createExec(cmd, {printStdout: true, printStderr: true});
         process.addListener('stdout', function(buf) {
             stdout += buf;
         });
         process.addListener('cmdEnd', function() {
             callback(stdout);
+        });
+        process.addListener('error', function() {
+            fail(errorMsg);
         });
         process.run();
     }
