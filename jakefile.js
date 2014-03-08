@@ -1,7 +1,8 @@
 /*global desc, task, jake, fail, complete */
 (function() {
-
     "use strict";
+
+    var lint = require("./build/lint/lint_runner.js");
 
     desc("Build and test");
     task("default", ["lint", "test"]);
@@ -11,13 +12,8 @@
 
     desc("Test our node server");
     task("testServer", ["nodeVersion"], function() {
-        var testFiles = new jake.FileList();
-        testFiles.include("**/_*_test.js");
-        testFiles.exclude("node_modules");
-        testFiles.exclude("src/client/**");
-
         var reporter = require("nodeunit").reporters["default"];
-        reporter.run(testFiles.toArray(), null, function(failures) {
+        reporter.run(nodeTestFiles(), null, function(failures) {
             if (failures) fail("Tests failed");
             complete();
         });
@@ -25,7 +21,9 @@
 
     desc("Test our client-side code in multiple browsers at once.");
     task("testClient", function() {
-        sh("node_modules/.bin/karma run", "Client-side tets failed!", complete);
+        sh("node_modules/.bin/karma run", "Client-side tets failed!", function(output) {
+            console.log('after client tests - make sure we tested all the browsers');
+        });
     }, {async: true});
 
     desc("clean out test files");
@@ -36,15 +34,17 @@
     });
 
     desc("Lint everything by default");
-    task("lint", [], function() {
-        var lint = require("./build/lint/lint_runner.js");
+    task("lint", ["lintServer", "lintClient"]);
 
-        var files = new jake.FileList();
-        files.include("**/*.js");
-        files.exclude("node_modules");
-        files.exclude("src/client/**");
+    desc("Lint our server code");
+    task("lintServer", [], function() {
+        var passed = lint.validateFileList(nodeFiles(), nodeLintOptions(), {});
+        if (!passed) fail("Lint failed");
+    });
 
-        var passed = lint.validateFileList(files.toArray(), nodeLintOptions(), {});
+    desc("Lint our client tests");
+    task("lintClient", [], function() {
+        var passed = lint.validateFileList(clientFiles(), browserLintOptions(), {});
         if (!passed) fail("Lint failed");
     });
 
@@ -74,7 +74,29 @@
         process.run();
     }
 
-    function nodeLintOptions() {
+    function nodeFiles() {
+        var jsFiles = new jake.FileList();
+        jsFiles.include("**/*.js");
+        jsFiles.exclude("node_modules");
+        jsFiles.exclude("src/client/**");
+        return jsFiles.toArray();
+    }
+
+    function nodeTestFiles() {
+        var testFiles_ = new jake.FileList();
+        testFiles_.include("**/_*_test.js");
+        testFiles_.exclude("node_modules");
+        testFiles_.exclude("src/client/**");
+        return testFiles_.toArray();
+    }
+
+    function clientFiles() {
+        var clientFiles_ = new jake.FileList();
+        clientFiles_.include("src/client/**/*.js");
+        return clientFiles_.toArray();
+    }
+
+    function globalLintOptions() {
         return {
             bitwise: true,
             curly: false,
@@ -89,9 +111,20 @@
             regexp: true,
             undef: true,
             strict: true,
-            trailing: true,
-            node: true
+            trailing: true
         };
+    }
+
+    function nodeLintOptions() {
+        var options = globalLintOptions();
+        options.node = true;
+        return options;
+    }
+
+    function browserLintOptions() {
+        var options = globalLintOptions();
+        options.browser = true;
+        return options;
     }
 
 }());
