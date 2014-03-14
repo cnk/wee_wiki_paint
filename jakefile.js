@@ -22,9 +22,17 @@
     desc("Test our client-side code in multiple browsers at once.");
     task("testClient", function() {
         sh("node_modules/.bin/karma run", "Client-side tets failed!", function(output) {
-            console.log('after client tests - make sure we tested all the browsers');
+            assertBrowserIsTested("Chrome", output);
+            assertBrowserIsTested("Safari", output);
         });
     }, {async: true});
+
+    function assertBrowserIsTested(browserName, output) {
+        var re = new RegExp(browserName + ".*: Executed ");
+        var found = output.match(re);
+        if (!found)
+            fail(browserName + " was not tested! Be sure you have an instance of " + browserName + " pointed to http://localhost:9876/");
+    }
 
     desc("clean out test files");
     task("clean", [], function() {
