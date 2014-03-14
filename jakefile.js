@@ -2,6 +2,12 @@
 (function() {
     "use strict";
 
+    var DESIRED_NODE_VERSION = 'v0.10.9';
+    var SUPPORTED_BROWSERS = [
+        "Chrome",
+        "Safari",
+    ];
+
     var lint = require("./build/lint/lint_runner.js");
 
     desc("Build and test");
@@ -22,15 +28,18 @@
     desc("Test our client-side code in multiple browsers at once.");
     task("testClient", function() {
         sh("node_modules/.bin/karma run", "Client-side tets failed!", function(output) {
-            assertBrowserIsTested("Chrome", output);
-            assertBrowserIsTested("Safari", output);
+            SUPPORTED_BROWSERS.forEach(function(browser) {
+                assertBrowserIsTested(browser, output);
+            });
         });
     }, {async: true});
 
     function assertBrowserIsTested(browserName, output) {
         var re = new RegExp(browserName + ".*: Executed ");
         var found = output.match(re);
-        if (!found)
+        if (found)
+            console.log('Testing against ' + browserName);
+        else
             fail(browserName + " was not tested! Be sure you have an instance of " + browserName + " pointed to http://localhost:9876/");
     }
 
@@ -58,15 +67,14 @@
 
     // desc("Ensure correct version of node is present");
     task("nodeVersion", [], function() {
-        var desiredNodeVersion = 'v0.10.9';
         var runningVersion = process.version;
 
         console.log("\nRunning NodeJS version: " + runningVersion);
-        if (runningVersion !== desiredNodeVersion) fail("This code was written for NodeJS version " + desiredNodeVersion + ". You are currently running " + runningVersion + ".");
+        if (runningVersion !== DESIRED_NODE_VERSION) fail("This code was written for NodeJS version " + DESIRED_NODE_VERSION + ". You are currently running " + runningVersion + ".");
     });
 
     function sh(cmd, errorMsg, callback) {
-        console.log("Run: " + cmd);
+        // console.log("Run: " + cmd);
 
         var stdout = '';
         var process = jake.createExec(cmd, {printStdout: true, printStderr: true});
