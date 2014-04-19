@@ -6,6 +6,7 @@
     var SUPPORTED_BROWSERS = [
         "Chrome",
         "Safari",
+        "Firefox",
     ];
 
     var lint = require("./build/lint/lint_runner.js");
@@ -28,19 +29,23 @@
     desc("Test our client-side code in multiple browsers at once.");
     task("testClient", function() {
         sh("node_modules/.bin/karma run", "Client-side tets failed!", function(output) {
+            var browserMissing = false;
             SUPPORTED_BROWSERS.forEach(function(browser) {
-                assertBrowserIsTested(browser, output);
+                browserMissing = checkIfBrowserIsTested(browser, output) || browserMissing;
             });
+            if (browserMissing && !process.env.loose) fail("Did not test all the supported browsers (use 'loose=true' to all skipping some browsers)");
+            if (output.indexOf("TOTAL: 0 SUCCESS") !== -1) fail("Client tests did not run!");
         });
     }, {async: true});
 
-    function assertBrowserIsTested(browserName, output) {
+    function checkIfBrowserIsTested(browserName, output) {
         var re = new RegExp(browserName + ".*: Executed ");
         var found = output.match(re);
         if (found)
             console.log('Testing against ' + browserName);
         else
-            fail(browserName + " was not tested! Be sure you have an instance of " + browserName + " pointed to http://localhost:9876/");
+            console.log(browserName + " was not tested! Be sure you have an instance of " + browserName + " pointed to http://localhost:9876/");
+        return !found;
     }
 
     desc("clean out test files");
