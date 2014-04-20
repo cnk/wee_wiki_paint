@@ -28,12 +28,12 @@
 
     desc("Test our client-side code in multiple browsers at once.");
     task("testClient", function() {
-        sh("node_modules/.bin/karma run", "Client-side tets failed!", function(output) {
+        sh("node_modules/.bin/karma run", "Client side tets failed. Make sure the karma server is running and you have some browsers watching it: ./karma.sh start", function(output) {
             var browserMissing = false;
             SUPPORTED_BROWSERS.forEach(function(browser) {
                 browserMissing = checkIfBrowserIsTested(browser, output) || browserMissing;
             });
-            if (browserMissing && !process.env.loose) fail("Did not test all the supported browsers (use 'loose=true' to all skipping some browsers)");
+            if (browserMissing && process.env.strict) fail("Did not test all the supported browsers (use 'strict=false' to all skipping some browsers)");
             if (output.indexOf("TOTAL: 0 SUCCESS") !== -1) fail("Client tests did not run!");
         });
     }, {async: true});
