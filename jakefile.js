@@ -6,7 +6,7 @@
     var SUPPORTED_BROWSERS = [
         "Chrome",
         "Safari",
-        "Firefox",
+        // "Firefox",
     ];
 
     var lint = require("./build/lint/lint_runner.js");
@@ -28,7 +28,7 @@
 
     desc("Test our client-side code in multiple browsers at once.");
     task("testClient", function() {
-        sh("node_modules/.bin/karma run", "Client side tets failed. Make sure the karma server is running and you have some browsers watching it: ./karma.sh start", function(output) {
+        sh("node_modules/.bin/karma run", "One ore more client side tets failed", function(output) {
             var browserMissing = false;
             SUPPORTED_BROWSERS.forEach(function(browser) {
                 browserMissing = checkIfBrowserIsTested(browser, output) || browserMissing;
@@ -100,6 +100,7 @@
         jsFiles.include("**/*.js");
         jsFiles.exclude("node_modules");
         jsFiles.exclude("src/client/**");
+        jsFiles.exclude("vendor/client/**");
         return jsFiles.toArray();
     }
 

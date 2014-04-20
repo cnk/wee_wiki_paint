@@ -1,15 +1,11 @@
 // Spike client code
-/*global dump */
+/*global dump, $ */
 
 (function () {
     "use strict";
 
-    window.onload = function() {
-        var div = document.createElement("div");
-        div.setAttribute("id", "test-div");
-        div.setAttribute("foo", "bar");
-        document.body.appendChild(div);
-
+    $(function() {
+        $('<div id="mydiv" foo="bar">blank</div>').prependTo("body");
         dump("Window loaded and div appended");
-    };
+    });
 }());

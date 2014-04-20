@@ -13,7 +13,7 @@
 
     describe('should be able to manipulate the dom', function() {
         it("should append a div to the body", function() {
-            var extractedDiv = document.getElementById("test-div");
+            var extractedDiv = document.getElementById("mydiv");
             expect(extractedDiv.getAttribute("foo")).to.equal("bar");
         });
     });
