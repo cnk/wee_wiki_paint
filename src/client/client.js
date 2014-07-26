@@ -5,7 +5,7 @@
     "use strict";
 
     $(function() {
-        $('<div id="mydiv" foo="bar">blank</div>').prependTo("body");
+        $('<div id="mydiv" foo="bar">blank</div>').appendTo("body");
         dump("Window loaded and div appended");
     });
 }());

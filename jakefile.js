@@ -2,7 +2,8 @@
 (function() {
     "use strict";
 
-    var DESIRED_NODE_VERSION = 'v0.10.9';
+    // var DESIRED_NODE_VERSION = 'v0.10.9';
+    var DESIRED_NODE_VERSION = 'v0.10.28';
     var SUPPORTED_BROWSERS = [
         "Chrome",
         "Safari",
