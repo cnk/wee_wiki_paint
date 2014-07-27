@@ -1,12 +1,12 @@
 // Spike client code
-/*global dump, $, wwp:true */
+/*global dump, Raphael, $, wwp:true */
 
 wwp = {};
 
 (function () {
     "use strict";
 
-    wwp.initializeDrawingArea = function() {
-        dump("Drawing area initialized");
+    wwp.initializeDrawingArea = function(drawingAreaId) {
+        var paper = new Raphael(drawingAreaId);
     };
 }());

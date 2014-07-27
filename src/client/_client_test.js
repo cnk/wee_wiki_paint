@@ -1,5 +1,5 @@
 // Basic client test
-/*global describe, it, expect, assert, dump, console, wwp */
+/*global describe, it, expect, assert, dump, console, $, wwp */
 
 (function () {
     "use strict";
@@ -10,15 +10,15 @@
             // In other words, set up a mock for the web page
             var div = document.createElement("div");
             div.setAttribute("id", "drawingArea");
-            div.setAttribute("foo", "bar");
             document.body.appendChild(div);
 
             // Initialize it with WWP fuctions
-            wwp.initializeDrawingArea();
+            wwp.initializeDrawingArea('drawingArea');
 
             // Test the div is set up
-            var extractedDiv = document.getElementById("drawingArea");
-            expect(extractedDiv.getAttribute("foo")).to.equal("bar");
+            var tagName = $('div#drawingArea').children()[0].tagName;
+            expect(tagName).to.equal('svg');
+
         });
     });
 }());
