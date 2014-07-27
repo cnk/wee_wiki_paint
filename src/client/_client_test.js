@@ -10,6 +10,7 @@
             // In other words, set up a mock for the web page
             var div = document.createElement("div");
             div.setAttribute("id", "drawingArea");
+            div.setAttribute("foo", "bar");
             document.body.appendChild(div);
 
             // Initialize it with WWP fuctions
@@ -17,7 +18,7 @@
 
             // Test the div is set up
             var extractedDiv = document.getElementById("drawingArea");
-            expect(extractedDiv).to.exist;
+            expect(extractedDiv.getAttribute("foo")).to.equal("bar");
         });
     });
 }());
