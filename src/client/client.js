@@ -1,11 +1,13 @@
 // Spike client code
-/*global dump, $ */
+/*global dump, $, wwp:true */
+
+wwp = {};
 
 (function () {
     "use strict";
 
-    $(function() {
+    wwp.createElement = function() {
         $('<div id="mydiv" foo="bar">blank</div>').appendTo("body");
         dump("Window loaded and div appended");
-    });
+    };
 }());

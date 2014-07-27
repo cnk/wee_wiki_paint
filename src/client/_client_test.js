@@ -1,5 +1,5 @@
 // Basic client test
-/*global describe, it, expect, assert, dump, console */
+/*global describe, it, expect, assert, dump, console, wwp */
 
 (function () {
     "use strict";
@@ -13,6 +13,8 @@
 
     describe('should be able to manipulate the dom', function() {
         it("should append a div to the body", function() {
+            wwp.createElement();
+
             var extractedDiv = document.getElementById("mydiv");
             expect(extractedDiv.getAttribute("foo")).to.equal("bar");
         });
