@@ -16,6 +16,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
         "vendor/client/jquery-1.11.0.js",
+        "vendor/client/raphael-2.1.2.js",
         "src/client/*.js"
     ],
 
