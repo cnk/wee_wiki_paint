@@ -4,18 +4,20 @@
 (function () {
     "use strict";
 
-    describe('addition', function() {
-        it("should add 1 and 1", function() {
-            assert.equal(1+1, 2);
-            expect(1+3).to.equal(4);
-        });
-    });
+    describe('Drawing area', function() {
+        it("should be initialized in a predefined div", function() {
+            // Create the div that will be assumed to be on our web page in production
+            // In other words, set up a mock for the web page
+            var div = document.createElement("div");
+            div.setAttribute("id", "drawingArea");
+            div.setAttribute("foo", "bar");
+            document.body.appendChild(div);
 
-    describe('should be able to manipulate the dom', function() {
-        it("should append a div to the body", function() {
-            wwp.createElement();
+            // Initialize it with WWP fuctions
+            wwp.initializeDrawingArea();
 
-            var extractedDiv = document.getElementById("mydiv");
+            // Test the div is set up
+            var extractedDiv = document.getElementById("drawingArea");
             expect(extractedDiv.getAttribute("foo")).to.equal("bar");
         });
     });
