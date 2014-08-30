@@ -12,15 +12,21 @@ wwp = {};
         paper = new Raphael(drawingAreaId);
         // spike 8/30/14
         var drawingArea = $('#'+drawingAreaId);
-        var divX = drawingArea.offset().left;
-        var divY = drawingArea.offset().top;
 
         var previousX = null;
         var previousY = null;
+        var isDragging = false;
+
+        drawingArea.mousedown(function(event) { isDragging = true;});
+        drawingArea.mouseup(function(event) { isDragging = false;});
+
+        var divX = drawingArea.offset().left;
+        var divY = drawingArea.offset().top;
+
         drawingArea.mousemove(function(event) {
             var relativeX = event.pageX - divX;
             var relativeY = event.pageY - divY;
-            if (previousX !== null) wwp.drawLine(previousX, previousY, relativeX, relativeY);
+            if (previousX !== null && isDragging) wwp.drawLine(previousX, previousY, relativeX, relativeY);
             previousX = relativeX;
             previousY = relativeY;
         });
