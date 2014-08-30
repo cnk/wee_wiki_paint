@@ -17,8 +17,9 @@ wwp = {};
         var previousY = null;
         var isDragging = false;
 
-        drawingArea.mousedown(function(event) { isDragging = true;});
-        drawingArea.mouseup(function(event) { isDragging = false;});
+        $(document).mousedown(function(event) { isDragging = true;});
+        $(document).mouseup(function(event) { isDragging = false;});
+        drawingArea.mouseleave(function(event) { isDragging = false;});
 
         var divX = drawingArea.offset().left;
         var divY = drawingArea.offset().top;
