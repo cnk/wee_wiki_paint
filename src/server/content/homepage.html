@@ -1,5 +1,27 @@
 <html>
+  <head>
+    <style>
+      div#drawingArea {
+        width:  800px;
+        height: 400px;
+        border: 1px solid red;
+      }
+    </style>
+  </head>
   <body>
     <h1>Welcome to WeeWikiPaint!</h1>
+
+    <h3>Drawing Area:</h3>
+
+    <div id="drawingArea"></div>
+
+    <div id="scripts">
+      <script src="../../../vendor/client/jquery-1.11.0.js" type="text/javascript"></script>
+      <script src="../../../vendor/client/raphael-2.1.2.js" type="text/javascript"></script>
+      <script src="../../client/client.js" type="text/javascript"></script>
+      <script>
+        wwp.initializeDrawingArea('drawingArea');
+      </script>
+    </div>
   </body>
 </html>

@@ -7,7 +7,7 @@
     var SUPPORTED_BROWSERS = [
         "Chrome",
         "Safari",
-        // "Firefox",
+        "Firefox",
     ];
 
     var lint = require("./build/lint/lint_runner.js");
@@ -29,7 +29,7 @@
 
     desc("Test our client-side code in multiple browsers at once.");
     task("testClient", function() {
-        sh("node_modules/.bin/karma run", "One ore more client side tets failed", function(output) {
+        sh("node_modules/.bin/karma run", "One ore more client side tests failed", function(output) {
             var browserMissing = false;
             SUPPORTED_BROWSERS.forEach(function(browser) {
                 browserMissing = checkIfBrowserIsTested(browser, output) || browserMissing;
