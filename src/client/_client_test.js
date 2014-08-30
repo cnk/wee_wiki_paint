@@ -35,13 +35,18 @@
 
         it("should draw a line", function() {
             var paper = wwp.initializeDrawingArea('drawingArea');
-            wwp.drawLine(20,200,200,400);
+            var startX = 20; var startY = 200; var endX = 200; var endY = 400;
+            wwp.drawLine(startX, startY, endX, endY);
 
             var elements = [];
             paper.forEach(function(element) {
                 elements.push(element);
             });
             expect(elements.length).to.equal(1);
+
+            var line = elements[0].node.attributes.d.value;
+            var expected = ['M', startX, ',', startY, 'L', endX, ',', endY].join('');
+            expect(line).to.equal(expected);
         });
     });
 }());

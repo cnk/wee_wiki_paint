@@ -14,6 +14,6 @@ wwp = {};
     };
 
     wwp.drawLine = function(startX, startY, endX, endY) {
-        paper.path(startX, startY, endX, endY);
+        paper.path("M"+startX+","+startY+"L"+endX+","+endY);
     };
 }());
