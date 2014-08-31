@@ -10,6 +10,22 @@ wwp = {};
 
     wwp.initializeDrawingArea = function(drawingAreaId) {
         paper = new Raphael(drawingAreaId);
+        wwp.clickToDrawLine(drawingAreaId);
+        return paper;
+    };
+
+    wwp.drawLine = function(startX, startY, endX, endY) {
+        paper.path("M"+startX+","+startY+"L"+endX+","+endY);
+    };
+
+    wwp.clickToDrawLine = function(drawingAreaId) {
+        $('#'+drawingAreaId).click( function(event) {
+            wwp.drawLine(0, 0, event.pageX, event.pageY);
+        });
+    };
+
+    wwp.spike = function(drawingAreaId) {
+        wwp.initializeDrawingArea(drawingAreaId);
         // spike 8/30/14
         var drawingArea = $('#'+drawingAreaId);
 
@@ -32,11 +48,5 @@ wwp = {};
             previousY = relativeY;
         });
         // end spike
-
-        return paper;
-    };
-
-    wwp.drawLine = function(startX, startY, endX, endY) {
-        paper.path("M"+startX+","+startY+"L"+endX+","+endY);
     };
 }());
