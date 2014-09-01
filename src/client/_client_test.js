@@ -42,21 +42,16 @@
 
             // The new element is a path with the expected attributes
             var expectedPathString = ['M', startX, ',', startY, 'L', endX, ',', endY].join('');
-            var actualPathString = pathStringFor(elements[0]);
+            var bbox = elements[0].getBBox();
+            var actualPathString = 'M' + bbox.x + ',' + bbox.y + 'L' + bbox.x2 + ',' + bbox.y2;
             expect(actualPathString).to.equal(expectedPathString);
         });
 
         it("should draw line segments between mouse clicks", function() {
-            var startX = 55; var startY = 72; var endX = 200; var endY = 400;
-            drawingDiv.trigger(clickMouse(startX, startY));
-            drawingDiv.trigger(clickMouse(endX, endY));
+            clickMouse(drawingDiv, 55, 72);
+            clickMouse(drawingDiv, 200, 400);
 
-            // The new element is a path, get dimensions relative to the canvas borders
-            var lineStart = relativePosition(drawingDiv, startX, startY);
-            var lineEnd   = relativePosition(drawingDiv, endX, endY);
-            var expectedPathString = ['M', lineStart.x, ',', lineStart.y, 'L', lineEnd.x, ',', lineEnd.y].join('');
-            var actualPathString = pathStringFor(pageElements(paper)[0]);
-            expect(actualPathString).to.equal(expectedPathString);
+            expect(paperPaths(paper)).to.eql([[55, 72, 200, 400]]);
         });
 
         ///////////////////// helper functions /////////////////
@@ -69,23 +64,21 @@
             return elements;
         }
 
-        function pathStringFor(element) {
-            var bbox = element.getBBox();
-            return 'M' + bbox.x + ',' + bbox.y + 'L' + bbox.x2 + ',' + bbox.y2;
-        }
-
-        function clickMouse(pageX, pageY) {
+        function clickMouse(target, canvasX, canvasY) {
             var ev = new jQuery.Event();
             ev.type = 'click';
-            ev.pageX = pageX;
-            ev.pageY = pageY;
-            return ev;
+            ev.pageX = canvasX + target.offset().top;
+            ev.pageY = canvasY + target.offset().left;
+            target.trigger(ev);
         }
 
-        function relativePosition(drawingArea, pageX, pageY) {
-            var expectedX = pageX - drawingArea.offset().top;
-            var expectedY = pageY - drawingArea.offset().left;
-            return {x: expectedX, y: expectedY};
+        function paperPaths(paper) {
+            var elements = pageElements(paper);
+
+            return elements.map(function(element) {
+                var line = element.getBBox();
+                return [line.x, line.y, line.x2, line.y2];
+            });
         }
     });
 }());
