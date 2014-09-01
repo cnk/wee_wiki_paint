@@ -41,22 +41,25 @@
             expect(elements.length).to.equal(1);
 
             // The new element is a path with the expected attributes
-            var expected = ['M', startX, ',', startY, 'L', endX, ',', endY].join('');
-            expect(lineValues(elements[0])).to.equal(expected);
+            var expectedPathString = ['M', startX, ',', startY, 'L', endX, ',', endY].join('');
+            var actualPathString = pathStringFor(elements[0]);
+            expect(actualPathString).to.equal(expectedPathString);
         });
 
-        it("should draw a line to where the mouse was clicked", function() {
-            var startX = 0; var startY = 0; var endX = 200; var endY = 400;
-            var mouseClickEvent = new jQuery.Event();
-            mouseClickEvent.pageX = endX;
-            mouseClickEvent.pageY = endY;
-            mouseClickEvent.type = 'click';
-            drawingDiv.trigger(mouseClickEvent);
+        it("should draw line segments between mouse clicks", function() {
+            var startX = 55; var startY = 72; var endX = 200; var endY = 400;
+            drawingDiv.trigger(clickMouse(startX, startY));
+            drawingDiv.trigger(clickMouse(endX, endY));
 
-            // The new element is a path with the expected attributes
-            var expected = ['M', startX, ',', startY, 'L', endX, ',', endY].join('');
-            expect(lineValues(pageElements(paper)[0])).to.equal(expected);
+            // The new element is a path, get dimensions relative to the canvas borders
+            var lineStart = relativePosition(drawingDiv, startX, startY);
+            var lineEnd   = relativePosition(drawingDiv, endX, endY);
+            var expectedPathString = ['M', lineStart.x, ',', lineStart.y, 'L', lineEnd.x, ',', lineEnd.y].join('');
+            var actualPathString = pathStringFor(pageElements(paper)[0]);
+            expect(actualPathString).to.equal(expectedPathString);
         });
+
+        ///////////////////// helper functions /////////////////
 
         function pageElements(page) {
             var elements = [];
@@ -66,9 +69,23 @@
             return elements;
         }
 
-        function lineValues(element) {
+        function pathStringFor(element) {
             var bbox = element.getBBox();
             return 'M' + bbox.x + ',' + bbox.y + 'L' + bbox.x2 + ',' + bbox.y2;
+        }
+
+        function clickMouse(pageX, pageY) {
+            var ev = new jQuery.Event();
+            ev.type = 'click';
+            ev.pageX = pageX;
+            ev.pageY = pageY;
+            return ev;
+        }
+
+        function relativePosition(drawingArea, pageX, pageY) {
+            var expectedX = pageX - drawingArea.offset().top;
+            var expectedY = pageY - drawingArea.offset().left;
+            return {x: expectedX, y: expectedY};
         }
     });
 }());

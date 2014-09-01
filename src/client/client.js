@@ -19,10 +19,21 @@ wwp = {};
     };
 
     wwp.clickToDrawLine = function(drawingAreaId) {
-        $('#'+drawingAreaId).click( function(event) {
-            wwp.drawLine(0, 0, event.pageX, event.pageY);
+        var drawingArea = $('#'+drawingAreaId);
+        var divX = drawingArea.offset().left;
+        var divY = drawingArea.offset().top;
+        var startX = null;
+        var startY = null;
+
+        drawingArea.click( function(event) {
+            var endX = event.pageX - divX;
+            var endY = event.pageY - divY;
+            if (startX !== null) wwp.drawLine(startX, startY, endX, endY);
+            startX = endX;
+            startY = endY;
         });
     };
+
 
     wwp.spike = function(drawingAreaId) {
         wwp.initializeDrawingArea(drawingAreaId);
