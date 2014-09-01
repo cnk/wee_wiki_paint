@@ -8,6 +8,7 @@
         "Chrome",
         "Safari",
         "Firefox",
+        // "iOS",
     ];
 
     var lint = require("./build/lint/lint_runner.js");
