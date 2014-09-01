@@ -8,12 +8,12 @@
     "jshint": "~2.1.11",
     "nodeunit": "~0.8.1"
   },
-  "repository": "",
+  "repository": "https://github.com/cnk/wee_wiki_paint",
   "author": "Cynthia Kiser",
   "license": "BSD",
-  "gitHead": "a2b41988108f6fb01567cc5016386c5858d8e18b",
-  "readmeFilename": "README",
+  "gitHead": "9d0f0670e576c64080fd8a659a2411e826024f1a",
+  "readmeFilename": "README.md",
   "engines": {
-      "node": "v0.10.9"
+      "node": "v0.10.28"
   }
 }
