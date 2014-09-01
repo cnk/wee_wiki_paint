@@ -27,7 +27,6 @@
   "repository": "https://github.com/cnk/wee_wiki_paint",
   "author": "Cynthia Kiser",
   "license": "BSD",
-  "gitHead": "9d0f0670e576c64080fd8a659a2411e826024f1a",
   "readmeFilename": "README.md",
   "engines": {
       "node": "v0.10.28"
