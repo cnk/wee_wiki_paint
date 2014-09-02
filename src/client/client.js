@@ -20,16 +20,12 @@ wwp = {};
 
     wwp.drawLineFollowingMouse = function(drawingAreaId) {
         var drawingArea = $('#'+drawingAreaId);
-        var divX = drawingArea.offset().left;
-        var divY = drawingArea.offset().top;
-        var startX = null;
-        var startY = null;
         var isDragging = false;
+        var start = null;
 
         drawingArea.mousedown( function(event) {
             isDragging = true;
-            startX = event.pageX - divX;
-            startY = event.pageY - divY;
+            start = relativePosition(drawingArea, event.pageX, event.pageY);
         });
 
         drawingArea.mouseup( function(event) {
@@ -37,54 +33,20 @@ wwp = {};
         });
 
         drawingArea.mousemove( function(event) {
-            var endX = event.pageX - divX;
-            var endY = event.pageY - divY;
-            if (isDragging) wwp.drawLine(startX, startY, endX, endY);
-            startX = endX;
-            startY = endY;
+            var end = relativePosition(drawingArea, event.pageX, event.pageY);
+            if (isDragging) {
+                wwp.drawLine(start.x, start.y, end.x, end.y);
+                start = end;
+            }
         });
     };
 
-    // Not used any more - was part of the way to final code
-    wwp.clickToDrawLine = function(drawingAreaId) {
-        var drawingArea = $('#'+drawingAreaId);
-        var divX = drawingArea.offset().left;
-        var divY = drawingArea.offset().top;
-        var startX = null;
-        var startY = null;
+    function relativePosition(element, absoluteX, absoluteY) {
+        var offset = element.offset().left;
+        return {
+            x: absoluteX - element.offset().left,
+            y: absoluteY - element.offset().top,
+        };
+    }
 
-        drawingArea.click( function(event) {
-            var endX = event.pageX - divX;
-            var endY = event.pageY - divY;
-            if (startX !== null) wwp.drawLine(startX, startY, endX, endY);
-            startX = endX;
-            startY = endY;
-        });
-    };
-
-    wwp.spike = function(drawingAreaId) {
-        wwp.initializeDrawingArea(drawingAreaId);
-        // spike 8/30/14
-        var drawingArea = $('#'+drawingAreaId);
-
-        var previousX = null;
-        var previousY = null;
-        var isDragging = false;
-
-        $(document).mousedown(function(event) { isDragging = true;});
-        $(document).mouseup(function(event) { isDragging = false;});
-        drawingArea.mouseleave(function(event) { isDragging = false;});
-
-        var divX = drawingArea.offset().left;
-        var divY = drawingArea.offset().top;
-
-        drawingArea.mousemove(function(event) {
-            var relativeX = event.pageX - divX;
-            var relativeY = event.pageY - divY;
-            if (previousX !== null && isDragging) wwp.drawLine(previousX, previousY, relativeX, relativeY);
-            previousX = relativeX;
-            previousY = relativeY;
-        });
-        // end spike
-    };
 }());
