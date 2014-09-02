@@ -53,20 +53,20 @@
 
         ///////////////////// helper functions /////////////////
 
-        function pageElements(page) {
-            var elements = [];
-            paper.forEach(function(element) {
-                elements.push(element);
-            });
-            return elements;
-        }
-
         function clickMouse(target, canvasX, canvasY) {
             var ev = new jQuery.Event();
             ev.type = 'click';
             ev.pageX = canvasX + target.offset().top;
             ev.pageY = canvasY + target.offset().left;
             target.trigger(ev);
+        }
+
+        function pageElements(page) {
+            var elements = [];
+            paper.forEach(function(element) {
+                elements.push(element);
+            });
+            return elements;
         }
 
         function pathStringFor(element) {
@@ -83,10 +83,7 @@
                     y2: parseInt(coord[4])
                 };
             }
-            else {
-                throw new Error('Could not find line coordinates');
-            }
-
+            else { throw new Error('Could not find line coordinates'); }
         }
 
         function paperPaths(paper) {
