@@ -32,26 +32,23 @@
             expect(paper.height).to.equal(drawingDivHeight);
         });
 
-        it("should draw a line", function() {
-            var startX = 20; var startY = 200; var endX = 200; var endY = 400;
-            wwp.drawLine(startX, startY, endX, endY);
+        it("should draw a line when our drawLine function is called explicitly", function() {
+            wwp.drawLine(20, 200, 200, 400);
 
             // DrawLine added a single element to the paper
             var elements = pageElements(paper);
             expect(elements.length).to.equal(1);
 
             // The new element is a path with the expected attributes
-            var expectedPathString = ['M', startX, ',', startY, 'L', endX, ',', endY].join('');
-            var bbox = elements[0].getBBox();
-            var actualPathString = 'M' + bbox.x + ',' + bbox.y + 'L' + bbox.x2 + ',' + bbox.y2;
-            expect(actualPathString).to.equal(expectedPathString);
+            expect(paperPaths(paper)).to.eql([[20, 200, 200, 400]]);
         });
 
         it("should draw line segments between mouse clicks", function() {
             clickMouse(drawingDiv, 55, 72);
             clickMouse(drawingDiv, 200, 400);
+            clickMouse(drawingDiv, 99, 35);
 
-            expect(paperPaths(paper)).to.eql([[55, 72, 200, 400]]);
+            expect(paperPaths(paper)).to.eql([[55, 72, 200, 400], [200, 400, 99, 35]]);
         });
 
         ///////////////////// helper functions /////////////////
@@ -72,11 +69,31 @@
             target.trigger(ev);
         }
 
+        function pathStringFor(element) {
+            return element.node.attributes.d.value;
+        }
+
+        function lineCoordinates(element) {
+            var coord = pathStringFor(element).match(/M(\d+),(\d+)L(\d+),(\d+)/);
+            if (coord !== null) {
+                return {
+                    x: parseInt(coord[1]),
+                    y: parseInt(coord[2]),
+                    x2: parseInt(coord[3]),
+                    y2: parseInt(coord[4])
+                };
+            }
+            else {
+                throw new Error('Could not find line coordinates');
+            }
+
+        }
+
         function paperPaths(paper) {
             var elements = pageElements(paper);
 
             return elements.map(function(element) {
-                var line = element.getBBox();
+                var line = lineCoordinates(element);
                 return [line.x, line.y, line.x2, line.y2];
             });
         }
