@@ -10,7 +10,7 @@ wwp = {};
 
     wwp.initializeDrawingArea = function(drawingAreaId) {
         paper = new Raphael(drawingAreaId);
-        wwp.clickToDrawLine(drawingAreaId);
+        wwp.drawLineFollowingMouse(drawingAreaId);
         return paper;
     };
 
@@ -18,6 +18,34 @@ wwp = {};
         paper.path("M"+startX+","+startY+"L"+endX+","+endY);
     };
 
+    wwp.drawLineFollowingMouse = function(drawingAreaId) {
+        var drawingArea = $('#'+drawingAreaId);
+        var divX = drawingArea.offset().left;
+        var divY = drawingArea.offset().top;
+        var startX = null;
+        var startY = null;
+        var isDragging = false;
+
+        drawingArea.mousedown( function(event) {
+            isDragging = true;
+            startX = event.pageX - divX;
+            startY = event.pageY - divY;
+        });
+
+        drawingArea.mouseup( function(event) {
+            isDragging = false;
+        });
+
+        drawingArea.mousemove( function(event) {
+            var endX = event.pageX - divX;
+            var endY = event.pageY - divY;
+            if (isDragging) wwp.drawLine(startX, startY, endX, endY);
+            startX = endX;
+            startY = endY;
+        });
+    };
+
+    // Not used any more - was part of the way to final code
     wwp.clickToDrawLine = function(drawingAreaId) {
         var drawingArea = $('#'+drawingAreaId);
         var divX = drawingArea.offset().left;
@@ -33,7 +61,6 @@ wwp = {};
             startY = endY;
         });
     };
-
 
     wwp.spike = function(drawingAreaId) {
         wwp.initializeDrawingArea(drawingAreaId);

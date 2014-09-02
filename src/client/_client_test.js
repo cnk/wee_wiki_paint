@@ -43,12 +43,29 @@
             expect(paperPaths(paper)).to.eql([[20, 200, 200, 400]]);
         });
 
-        it("should draw line segments between mouse clicks", function() {
-            clickMouse(drawingDiv, 55, 72);
-            clickMouse(drawingDiv, 200, 400);
-            clickMouse(drawingDiv, 99, 35);
+        it("should draw a line when we drag the mouse", function() {
+            mouseDown(drawingDiv, 55, 72);
+            mouseMove(drawingDiv, 200, 400);
 
-            expect(paperPaths(paper)).to.eql([[55, 72, 200, 400], [200, 400, 99, 35]]);
+            expect(paperPaths(paper)).to.eql([[55, 72, 200, 400]]);
+        });
+
+        it("should not draw a line when mouse button is not down", function() {
+            mouseMove(drawingDiv, 55, 72);
+            mouseMove(drawingDiv, 200, 400);
+
+            expect(paperPaths(paper)).to.eql([]);
+        });
+
+        it("should draw independent lines when depending on mouse button being down", function() {
+            mouseDown(drawingDiv, 55, 72);
+            mouseMove(drawingDiv, 200, 400);
+            mouseUp(drawingDiv, 200, 400);
+            // line 2
+            mouseDown(drawingDiv, 32, 42);
+            mouseMove(drawingDiv, 55, 6);
+
+            expect(paperPaths(paper)).to.eql([[55, 72, 200, 400], [32, 42, 55, 6]]);
         });
 
         ///////////////////// helper functions /////////////////
@@ -56,6 +73,30 @@
         function clickMouse(target, canvasX, canvasY) {
             var ev = new jQuery.Event();
             ev.type = 'click';
+            ev.pageX = canvasX + target.offset().top;
+            ev.pageY = canvasY + target.offset().left;
+            target.trigger(ev);
+        }
+
+        function mouseDown(target, canvasX, canvasY) {
+            var ev = new jQuery.Event();
+            ev.type = 'mousedown';
+            ev.pageX = canvasX + target.offset().top;
+            ev.pageY = canvasY + target.offset().left;
+            target.trigger(ev);
+        }
+
+        function mouseMove(target, canvasX, canvasY) {
+            var ev = new jQuery.Event();
+            ev.type = 'mousemove';
+            ev.pageX = canvasX + target.offset().top;
+            ev.pageY = canvasY + target.offset().left;
+            target.trigger(ev);
+        }
+
+        function mouseUp(target, canvasX, canvasY) {
+            var ev = new jQuery.Event();
+            ev.type = 'mouseup';
             ev.pageX = canvasX + target.offset().top;
             ev.pageY = canvasY + target.offset().left;
             target.trigger(ev);
@@ -83,7 +124,9 @@
                     y2: parseInt(coord[4])
                 };
             }
-            else { throw new Error('Could not find line coordinates'); }
+            else {
+                throw new Error('Could not find line coordinates');
+            }
         }
 
         function paperPaths(paper) {
